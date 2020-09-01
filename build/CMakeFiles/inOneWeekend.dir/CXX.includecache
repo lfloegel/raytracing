@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/larafs/Desktop/raytracing/color.h
+vec3.h
+/Users/larafs/Desktop/raytracing/vec3.h
+iostream
+-
+
+/Users/larafs/Desktop/raytracing/main.cpp
+color.h
+/Users/larafs/Desktop/raytracing/color.h
+ray.h
+/Users/larafs/Desktop/raytracing/ray.h
+vec3.h
+/Users/larafs/Desktop/raytracing/vec3.h
+iostream
+-
+
+/Users/larafs/Desktop/raytracing/ray.h
+vec3.h
+/Users/larafs/Desktop/raytracing/vec3.h
+
+/Users/larafs/Desktop/raytracing/vec3.h
+cmath
+-
+iostream
+-
+
