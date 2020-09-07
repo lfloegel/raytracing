@@ -1,0 +1,40 @@
+all ray tracers have ray class and computation of what color is seen along ray 
+function: P(t) = A + tb 
+P: 3d postion along line in 3d 
+A: ray origin 
+b: ray direction 
+t: ray parameter, real number or double, plug in different t and P(t) moves along line, negative t moves backwards 
+
+ray tracer: sends rays through pixels 
+
+first developing ray tracer: set up camera 
+set up pixel dimensions for rendered image 
+set up virtual viewport through which to pass scene rays 
+    aspect ratio should be same as rendered image for standard square pixels 
+
+focal length: distance between projection point and projection plane 
+projection point: camera position 
+y axis: up 
+x axis: right 
+z axis: + out screen and - into screen 
+right hand coordination system 
+
+ray_color(ray): returns color of background 
+linearly belnds white and blue depending on height of y after scaling ray direction to unit length -1.0 < y < 1.0 
+adding one and multiplying by 0.5 to scale t to 0 <= t <= 1 
+linear blend = interpolation = lerp equation: blendedValue = (1 - t) * startValue + t * endValue 
+startValue: white 
+endValue: blue 
+t: 0 <= t <= 1 
+
+
+path tracing: tracing individual rays from camera, tracking rays' interactions, 
+cating shadows, reflections, and path back to light source  
+
+limits calculation based on what camera sees 
+ray sorting: grouping together similar directional ray to allow faster rendering 
+
+steps: 
+a. calculate ray from eye to pixel 
+b. determine object ray intersects 
+c. compute color at intersection point 

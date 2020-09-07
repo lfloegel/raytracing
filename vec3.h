@@ -12,9 +12,10 @@ class vec3
         vec3() : e{0,0,0} {} //empty constructor //sets x, y, z to 0 
         vec3(double e0, double e1, double e2) : e{e0, e1, e2} {} //parameters 
         //translates to: 
-        //e[0] = e0 
-        //e[1] = e1 
-        //e[2] = e2 
+        //e{x, y, z} 
+        //e0 = e[0]  
+        //e1 = e[1]  
+        //e2 = e[2]  
 
 
         double x() const { return e[0]; } //sets x() to e[0] 
@@ -58,6 +59,14 @@ class vec3
         {
             return e[0]*e[0] + e[1]*e[1] + e[2]*e[2]; 
         } 
+
+        inline static vec3 random() { //independent of any objects of the class 
+            return vec3(random_double(), random_double(), random_double());
+        }
+
+        inline static vec3 random(double min, double max) {
+            return vec3(random_double(min,max), random_double(min,max), random_double(min,max));
+        }
 
     public: 
         double e[3]; //declaring array of size three 
@@ -112,5 +121,47 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
 inline vec3 unit_vector(vec3 v) {
     return v / v.length();
 } 
+
+vec3 random_in_unit_sphere() {
+    while (true) {
+        auto p = vec3::random(-1,1);
+        if (p.length_squared() >= 1) continue; //if not, skips return and iterates
+        return p;
+    }
+} 
+
+vec3 random_unit_vector() {
+    auto a = random_double(0, 2*pi); //2*pi = area of unit ball 
+    auto z = random_double(-1, 1);
+    auto r = sqrt(1 - z*z); //radius 
+    return vec3(r*cos(a), r*sin(a), z);
+} 
+
+vec3 random_in_hemisphere(const vec3& normal) {
+    vec3 in_unit_sphere = random_in_unit_sphere();
+    if (dot(in_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
+        return in_unit_sphere;
+    else
+        return -in_unit_sphere;
+} 
+
+vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2*dot(v,n)*n; //n unit vector and provides direction 
+} 
+
+vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
+    auto cos_theta = dot(-uv, n); //-R * n 
+    vec3 r_out_perp =  etai_over_etat * (uv + cos_theta*n);
+    vec3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.length_squared())) * n;
+    return r_out_perp + r_out_parallel;
+} 
+
+vec3 random_in_unit_disk() {
+    while (true) {
+        auto p = vec3(random_double(-1,1), random_double(-1,1), 0);
+        if (p.length_squared() >= 1) continue;
+        return p;
+    }
+}
 
 #endif  
