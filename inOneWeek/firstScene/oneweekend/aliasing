@@ -1,0 +1,13 @@
+average a bunch of samples inside each pixel 
+not bothering with stratification
+    critical to some ray tracers 
+
+for given pixel, have multiple samples within pixel 
+    send rays through each of the samples 
+    colors of rays averaged 
+
+camera class: manages virtual camera, related tasks of scene sampling 
+update write_color function to handle multi sampled color computation 
+    add full color each iteration, perform single divide at end by amount of samples when writing out color 
+
+clamp(x, min, max): clamps value x to range [min, max] 

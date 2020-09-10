@@ -1,0 +1,131 @@
+need surface normal to shade 
+perpendicular to surface at point of intersection 
+two design decisions for normals: 
+    1. whether normals are unit length 
+        convinent for shading 
+    2. whether normal should always point outwards 
+
+PART 1: 
+    sphere: outward normal in direction of hit point - center 
+        P - C 
+
+    n: normal vector, unit length vector, each component -1 < x < 1 
+    map each component to interval of 0 < x < 1 
+    map r, g, b to x, y, z 
+
+    need hit point 
+    assume closest hit point: smallest t 
+        i.e. if t inside of sphere, two intersection points and take smallest point 
+
+    vector dotted with self = squared length of vector 
+
+    multiple hittable objects: create an abstract class for anything a ray might hit 
+    make both a sphere and list of spheres something ray can hit 
+    'Surface' often named for class, weakness being maybe want to hit volumes 
+
+
+    hittable abstract class: has hit function that takes in a ray, 
+    most ray tracers add valid interval for hits tmin to tmax 
+        hit only counts if tmin < t < tmax 
+    current ray tracer uses positive t instead that counts 
+
+    design question: decide if compute normal if hit something 
+        might end up hitting something closer in search 
+        only need normal of closest thing 
+
+    virtual functions defined in base class and overridden in derived class, not mandatory 
+        used to ensure using the correct function when multiple classes have the same function 
+        allows for consistent code 
+        used in base class to ensure function is overriden 
+        used when pointer of base class points to derived class object 
+        i.e. 
+            Derived derived1;
+            Base* base1 = &derived1;
+
+            // calls function of Base class
+            base1->print(); 
+            // if print virtual in Base class, calls function of Derived class 
+
+        virtual functio() = 0; 
+            indicates function pure virtual 
+                must be overridden by sub class 
+                classes containing pure virtual functions refered to as abstract 
+                    cannot be directly instiated 
+                    can not create object of abstract class 
+                        need to define sub class 
+
+PART 2: 
+    if ray intersects sphere from outside, normal goes against it 
+    if ray intersects sphere from inside, normal goes with it 
+    can have normal always point against ray 
+    choose one as eventually need to determine which side of surface ray is coming from 
+        important for objects rendered differently on each side or have an inside and outside 
+            i.e. letters on two sided sheet of paper 
+            i.e. glass balls 
+    
+    if determine normals always point out, need to determine which side ray is on when color it 
+        compare ray with normal by taking dot product of the vectors 
+        if ray and normal face same direction, ray inside object 
+            dot product + 
+        if ray and normal face different directions, ray outside object 
+            dot product - 
+
+    if determine normals always point in, cannot use dot product to find side of surface ray is on 
+        need to store info 
+        i.e. 
+            bool front_face;
+            if (dot(ray_direction, outward_normal) > 0.0) {
+                // ray is inside the sphere
+                normal = -outward_normal; //set normal against ray direction 
+                front_face = false; //ray intersecting fron inside 
+            } else {
+                // ray is outside the sphere
+                normal = outward_normal;
+                front_face = true; //ray intersecting from outside 
+            } 
+
+    setting it as normal always points outward from surface or always against incident ray 
+    choice depends on if want to determine side of surface at time of geometry intersection or time of coloring 
+    in book, going for time of geometry 
+
+    incident ray: pointing towards and hitting a surface 
+
+    shared_ptr: pointed to some allocated type, reference counting semantics 
+        each time assign value to another shared pointer, reference increments 
+        each time pointer goes out of scope, reference decrements 
+        count = 0, object deleted 
+        allows multiple geometries to share common instance 
+            i.e. bunch of spheres that use same texture map material 
+        makes memory management automatic and easier to deal with 
+        included in <memory> header 
+
+    make_shared<thing>(thing_constructor_params . . .): allocates new instance of type thing using constructor parameters 
+        returns shared_ptr<thing> 
+
+
+double hit_sphere(const point3& center, double radius, const ray& r) {
+    vec3 oc = r.origin() - center; //find origin of sphere 
+    auto a = r.direction().length_squared(); 
+    auto half_b = dot(oc, r.direction());
+    auto c = oc.length_squared() - radius*radius;
+    auto discriminant = half_b*half_b - a*c;
+    if (discriminant < 0) {
+        return -1.0; //t doesnt hit sphere 
+    } else {
+        return (-half_b - sqrt(discriminant) ) / a; //simplified quadratic  
+                                                     //smallest hit point 
+    }
+} 
+
+//linearly blends 
+color ray_color(const ray& r) { 
+    auto t = hit_sphere(point3(0,0,-1), 0.5, r);
+    if (t > 0.0) { //t inside sphere 
+        vec3 N = unit_vector(r.at(t) - vec3(0,0,-1)); //normal vector: ray of hit point - center 
+        return 0.5*color(N.x()+1, N.y()+1, N.z()+1); //color normal based on where it is 
+    } 
+    vec3 unit_direction = unit_vector(r.direction()); //unit vector 
+    t = 0.5*(unit_direction.y() + 1.0); //scale it to 0 < t < 1 
+                                        //if t < 0, not hitting sphere, t = 0 in scaling 
+    return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
+} 
