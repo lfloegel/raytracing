@@ -1,0 +1,33 @@
+volumes, participating media: smoke, fog, and mist 
+subsurface scattering: dense fog inside object 
+usually adds software architectural mayhem because volumes different animal than surfaces 
+    cute technique to make volume a random surface 
+    bunch of smoke can be replaced with surface probabilistically might or might not be there at every point in 
+    volume 
+volume of constant medium: ray through there can either scatter inside volume, or make it all the way through 
+    more thin transparent volumes more likely to have rays go through 
+        i.e. light fog 
+    how far ray has to travel through volume determines how likely for ray to make it through 
+    as ray passes through, may scatter at any point 
+        denser the volume, more likely that is 
+        probability ray scatters in any small distance L: 
+            probability = C * L 
+            C: proportional to optical density of volume 
+    if go through all differential equations, for a random number get a distance where scattering occurs 
+        if distance outside volume, no hit 
+    for constant volume, need density C and boundary 
+
+scattering function of isotropic picks uniform random direction 
+make sure it works for ray origins inside volume 
+    in clouds, things bounce a lot so that is a common case 
+code assumes once ray exits constant medium boundary, will keep going infinitely outside boundary 
+    assumes boundary shape convex 
+    particular implementation works well for boundaries like boxes and spheres, not with toruses or shapes that 
+    contain voids 
+
+replace two boxes with smoke and fog make light bigger for faster convergence and dimmer so it doesn't blow out 
+the scene 
+    i.e. dark and light particles 
+
+no shadow rays, but get caustic and subsurfaces for free 
+    double edge design decision 

@@ -1,0 +1,47 @@
+program in previous books scatters rays from a surface or volume 
+    model for light interacting with surface 
+one natural way to model this probability 
+    probability of light scattering: A 
+    probability of light absorbed: 1 - A
+    A: albedo 
+        defines form of fractional reflectance 
+        vary with color and incident direction 
+
+most physically based renderers, use set of wavelengths for light color rather than RGB 
+    R, G, and B as specific algebraic mixtures of long, medium, and short wavelengths 
+if light scatters, has directional distribution described as pdf over solid angle 
+    scattering pdf: s(direction) 
+        vary with incident direction 
+            direction of incoming ray 
+            i.e. reflections off ground become mirror like as viewing incident angle approaches grazing 
+    color of surface in terms of these quantities: 
+        color = integral(A * s(direction) * color(direction)) 
+        A and s() may depend on view direction or scattering position 
+            position on surface or within volume 
+            output color may vary with direction or scattering position 
+
+mc basic formula: 
+    color = A * s(direction) * color(direction) / p(direction) 
+    p(direction): pdf of direction randomly generated 
+for lambertian surface, already implicitly implemented formula for special case where p() cosine density 
+    s() of lambertian surface proportional to cos(Ø) 
+    Ø: angle relative to surface normal 
+    pdfs must integrate to one 
+    for cos(Ø) < 0 s(direction) = 0, and integral of cos over hemisphere pi 
+        in spherifcal coordinates: 
+            dA = sin(Ø)dØdø 
+        area = 0 to 2pi (0 to pi/2 (cos(Ø)sin(ØdØdø))) = 2pi(1/2) = pi 
+lambertian surface scattering pdf: 
+    s(direction) = cos(Ø)/pi 
+if sample using pdf equivalent to scattering pdf: 
+    p(direction) = s(direction) = cos(Ø)/pi 
+    color = A * color(direction) 
+    exactly in ray_color() function 
+        need to generalize to send extra rays in important directions 
+        i.e. towards lights 
+    math applies to surfaces and volumes 
+reflection desribed by bidirectional reflectance distribution function 
+    i.e. brdf 
+    brdf = A * s(direction) / cos(Ø) 
+    for lambertian surface: brdf = A / pi 
+for participating media adn volumes, albedo known as scattering albedo, and scattering pdf known as phase function 

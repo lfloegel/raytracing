@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/larafs/Desktop/raytracing/geometry.h
+cstdlib
+-
+cstdio
+-
+iostream
+-
+iomanip
+-
+cmath
+-
+
+/Users/larafs/Desktop/raytracing/phong.cpp
+cstdio
+-
+cstdlib
+-
+memory
+-
+vector
+-
+utility
+-
+cstdint
+-
+iostream
+-
+fstream
+-
+cmath
+-
+sstream
+-
+chrono
+-
+geometry.h
+/Users/larafs/Desktop/raytracing/geometry.h
+

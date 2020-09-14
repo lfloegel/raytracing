@@ -1,0 +1,16 @@
+send a bunch of extra rays toward light sources so picture is less noisy 
+assume can send bunch of rays toward light source using pdf pLight(direction) 
+    i.e. probability p of ray towards light source 
+assume have pdf related to s 
+    pSurface(direction) 
+great thing about pdfs is that can use linear mixtures of them to form mixture densities that are also pdfs 
+    i.e. simpliest: p(direction) = 1/2 * light(direction) + 1/2 * pSurface(direction) 
+    as long as weights positive and add to one, any such mixture of pdfs is a pdf 
+    can use any pdf: all pdfs eventually converge to correct answer 
+    figure out how to make pdf larger where s(direction) * color(direction) large 
+        for diffuse surfaces, matter of guessing where color(direction) is high 
+        for mirror, s() huge only near one direction 
+            matters a lot more 
+            most renderers make mirrors special case 
+                make s/p implicit 
+                program does that 

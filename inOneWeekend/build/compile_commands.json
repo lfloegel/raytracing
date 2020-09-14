@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/Users/larafs/Desktop/raytracing/build",
-  "command": "/Library/Developer/CommandLineTools/usr/bin/c++   -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk -std=gnu++11 -o CMakeFiles/inOneWeekend.dir/main.cpp.o -c /Users/larafs/Desktop/raytracing/main.cpp",
-  "file": "/Users/larafs/Desktop/raytracing/main.cpp"
-}
-]
