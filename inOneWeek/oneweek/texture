@@ -1,0 +1,37 @@
+texture: function that makes colors on a surface procedural 
+procedural texturing: pattern applied to surface of object generated using mathematical equation 
+procedure can be synthesis code, or image lookup, or combination of both 
+first make all colors a texture 
+most programs keep constant rgb colors and textures in different classes 
+    can do differently 
+    able to make any color a texture 
+
+update hit_record to store u,v surface coordinates of ray object hit point 
+need to compute (u,v) texture coordinates for hittables 
+spheres: based on some longitude and latitude 
+    i.e. spherical coordinates 
+    i.e. if have a (Ø, ø) in spherical coordinates, need to scale Ø and ø to fractions 
+    Ø: angle down from pole 
+    ø: angle around axis through the poles 
+    normalization to [0,1]: 
+        u = ø / 2pi 
+        v = Ø / pi 
+    to compute Ø and ø, for given hit point, formula for spherical coordinates of unit radius sphere: 
+        x = sin(ø)cos(Ø) 
+        y = cos(ø)cos(Ø) 
+        z = sin(Ø)
+        need to invert: 
+            ø = atan2(y, x)
+                returns values in range -pi to pi 
+            Ø = asin(z)
+                returns values in range -pi/2 to pi/2 
+
+checkered pattern: sign of sine and cosine alternates ordinarily 
+    multiply trig functions in all three dimensions 
+    sign of product forms 3d checkered pattern 
+checker odd and even pointers can be to constant texture or another procedural texture 
+
+hard coded switch statement to select desired scene for given run 
+
+spherical coordinate system: 3d coordinate system where position of point specified by radial distance to point from 
+fixed origin, polar angle from fixed zenith or vertical direction and azimuthal angle 

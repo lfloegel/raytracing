@@ -1,0 +1,157 @@
+ray object intersection main bottleneck in ray tracers 
+    time linear with number of objects 
+    repeated search on same model, so ought to be able to make it logarithmic search in spirit of binary search 
+    sending millions to billions of rays on same model, can do analog of sorting the model 
+        each ray intersection can be sublinear search 
+        to most commmon families of sorting: 
+            1. divide space 
+            2. divide objects 
+            latter much easier to code and just as fast for most models 
+
+bounding volume hierarchies: bounding volume over set of primitives, find a volume that fully encloses all objects 
+    i.e. any ray that misses the bounding sphere misses definitely misses all objects bounded 
+    i.e. if hits bounding sphere, might hit object 
+bouding code always in form of: 
+    if (ray hits bounding object)
+        return whether ray hits bounded objects
+    else
+        return false 
+dividing objects into subsets 
+    not dividing screen or volume 
+    any object in one bouding volume, but bounding volumes can overlap and not ordered 
+
+to make things sublinear: make bounding volumes hierarchical 
+    tree illustrated has no concept of ordering in left and right children 
+        simply inside 
+    i.e. 
+        if (hits purple)
+            hit0 = hits blue enclosed objects
+            hit1 = hits red enclosed objects
+            if (hit0 or hit1)
+                return true and info of closer hit
+        return false 
+
+need to make good divisons and a way to intersect ray with bounding volume 
+    ray bounding volume intersection needs to be fast 
+    bounding volumes need to be pretty compact 
+    axis aligned boxes work better than alternatives 
+        keep design choice in mind when encounter unusual types of models 
+
+axis aligned bounding boxes: axis aligned bounding rectangular parallelpiped 
+any method used to intersect ray with AABB fine 
+all need to know is whether or not ray hits it 
+    don't need hit points or normals or anything else needed of an object that is displayed 
+most use 'slab' method: based on observation that n dimensional AABB is intersection of n axis aligned intervals 
+known as slabs 
+    interval: points between two endpoints 
+        i.e. x such that 3 < x < 5, or x in (3,5) 
+    2D: two intervals overalapping makes 2D AABB, or a rectangle 
+for ray to hit one interval, first need to figure out whether ray hits boundaries 
+if ray parallel to plane in 2D, ray parameters undefined 
+in 3D, boundaries are planes 
+    equations for planes: 
+        x=x0 
+        x=x1 
+ray hitting plane: 
+    ray equation: P(t) = A + tb 
+        given t returns location P(t) 
+    applies to all three coordinates x, y, z 
+        i.e. x(t) = A_x + tb_x 
+    ray hits plane x=x0 at t that satisfies equation: x0 = A_x + t_0b_x 
+        t at hit point: t_0 = (x_0 - A_x) / b_x 
+    ray hits plane x=xw: 
+        t at hit point: t_1 = (x_1 - A_x) / b_x 
+    to turn 1D math into a hit test is that for a hit, t intervals need to overlap 
+        t can hit x0 plane but not y0 plane 
+            overlap indicates a hit 
+    determine if t intervals in slab overlap: 
+        i.e. 
+            compute (tx0, tx1)
+            compute (ty0, ty1)
+            return overlap?( (tx0, tx1), (ty0, ty1)) 
+    3D version works as well: 
+        i.e. 
+            compute (tx0, tx1)
+            compute (ty0, ty1)
+            compute (tz0, tz1)
+            return overlap?( (tx0, tx1), (ty0, ty1), (tz0, tz1)) 
+
+issues: 
+    1. suppose ray traveling in - x direction 
+        interval (t_x0, t_x1) as computed above might be reversed 
+        i.e. x in (8, 4) 
+    2. divide could give infinities 
+        if ray origin on one of slab boundaries, can get a NaN 
+    3. vectorization issues 
+
+t_x0 = (x0 - A_x) / b_x 
+t_x1 = (x1 - A_x) / b_x 
+perfectly vlaid rays will have b_x = 0 
+    some inside slab, some not 
+    zero will have +,- sign under IEEE floating point 
+    for b_x = 0, t_x0 and t_x1 will both be +infinity or both be -infinity if not between x0 and x1 
+        if not between, not intersecting planes 
+        use min and max 
+        i.e. min -infinity is t_x0 and max -infinity is t_x1 
+t_x0 = min((x0 - A_x) / b_x, (x1 - A_x) / b_x) 
+t_x1 = max((x0 - A_x) / b_x, (x1 - A_x) / b_x) 
+if b_x = 0 and either x0 - A_x = 0 or x1 - A_x = 0, will get NaN 
+    can probably accept either hit or not hit 
+
+suppose assume intervals not reversed where first value in interval < second value and want to return true in that 
+instance 
+    boolean overlap computes overlap interval (f, F) of intervals (d, D) and (e, E): 
+        i.e. 
+            bool overlap(d, D, e, E, f, F)
+            f = max(d, e)
+            F = min(D, E)
+            return (f < F) 
+    if any NaNs, compares returns false 
+        ensure bounding boxes have a little padding for grazing cases 
+    all three dimensions in a loop, passing in interval [tmin, tmax] 
+
+each slab on different axis and planes on each slab count as one 
+    i.e. x0 and x1 planes on x axis slab 
+
+add function to compute bounding box of all hittables 
+    then make hierarchy of boxes over all primitives 
+        individual primitives live at leaves 
+    returns bool because not all primitives have bounding boxes 
+    i.e. infinite planes 
+    moving objects have bounding box that encloses object for entire time interval [time1, time2] 
+        take box of sphere at t0 and box of sphere at t1 and compute box of those two boxes 
+
+for lists, can store bouding box at construction, or compute it on fly 
+    in book, on fly as usually only called at BVH construction 
+
+BVH also hittable 
+    a contianer but can respond to does this ray hit it? 
+design question: 
+    if have two classes 
+        1. tree 
+        2. nodes in tree 
+    or one class and have root be a node pointed to 
+    in book, one class one when feasible 
+children pointers to generic hittables 
+    i.e. bvh_nodes, spheres, or any other hittable 
+hit(): check whether box for node hit 
+    if so, check the children and sort out any details 
+
+build efficiency structure in constructor 
+BVHs: as long as list of objects in a bvh_node gets divided into two sublists, hit function will work 
+    works best if division done well, so that the two children will have smaller boundign boxes than parents' 
+        for speed and not correctedness 
+    in book, middle ground 
+    at each node split: 
+        1. randomly choose an axis 
+        2. sort primitives 
+            using std::sort 
+        3. put half in each subtree 
+    when list coming in is two elements, put one in each subtree and end recursion 
+        traversal algorithm should be smooth and not have to check for NULL pointers 
+            if have only one element, duplicate it into each subtree 
+            checking explicity for three elements and following one recusion helps, but want to optimize method later 
+
+box comparison functions: used by std::sort() 
+    create generic comparator returns true if first argument < second, given additional axis index argument 
+    then define axis specific comparison functions that use generic comparison function 

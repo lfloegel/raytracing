@@ -1,0 +1,34 @@
+average of what camera sees over interval of shutter opening and shutting 
+get random estimate by sending each ray at some random time when shutter is open 
+    as long as objects where should be at that time, can get right average answer with a ray that is at exactly a 
+    single time 
+basic idea: generate rays at random time while shutter is open and intersect model at that one time 
+    have camera move and objects move, but have rays exist at exactly one time 
+        engine of ray tracer can make sure objects 
+
+
+spacetime ray tracing: possibe to ray trace large animations more quickly in comparison to frame by frame rendering, 
+reduces amount of ray object intersections that must be computed 
+4D geometric space involving x, y, z and time 
+each ray is a new way the camera sees the scene as the objects and camera moves and taking the average allows for 
+motion blur effect 
+
+modify camera to generate rays at random time between time1 and time2 
+    should camera keep track of time1 and time2 or should it be left to user of camera when a ray is created 
+    when in doubt, make constructor more complex if it makes calls simple 
+    in book, camera keeps track - personal preference 
+        camera right now does not move and generates rays over a time period 
+
+need moving object: create sphere class that has its center move linearly from center0 at time0 to center1 at time1 
+    keeps moving outside of time interval, so times need not match up with camera aperature open and close 
+    alternative to making a new moving sphere class: make them all move while stationary spheres have same begin and 
+    end position 
+moving_sphere::hit() similar to sphere::hit(): center becomes a function center(time) 
+    center of sphere keeps moving and need to update normal vectors with it 
+
+motion image: takes diffuse spheres from scene and have them move during image render 
+    each sphere moves from its center C at time t=0 to C + (0, r/2, 0) at time t=2 where r a random number in [0,1) 
+    
+
+acceleration structure: object that holds geometric info for primitives in the scene preprocessed in a way to allow 
+trivial rejection of potential ray primitive intersections 
