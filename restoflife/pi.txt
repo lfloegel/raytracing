@@ -1,2 +1,0 @@
-Regular    Estimate of Pi = 3.141571640000
-Stratified Estimate of Pi = 3.141592880000
