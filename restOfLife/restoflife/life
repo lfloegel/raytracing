@@ -1,0 +1,3 @@
+hard core physically based renderers: convert renderer from RGB to spectral 
+    each ray have random wavelength 
+    almost all RGBs floats 

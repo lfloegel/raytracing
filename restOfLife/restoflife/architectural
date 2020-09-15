@@ -1,0 +1,18 @@
+mixture density approach: not have traditional shadow rays 
+    can sample lights, windows, and whatever else is bright 
+most programs branch, and send one or more terminal rays to lights explicitly, and one according to the reflective distribution of 
+surface 
+    faster convergence on more restricted scenes and add shadow rays 
+    personal preference 
+issues with code: 
+    1. pdf construction hard coded in ray_color() 
+        clean up by passing something into color about lights 
+        unlike bvh construction, should be careful about memory issues as unbounded number of samples 
+    2. specular rays no longer supported 
+        i.e. glass and metal 
+        either separate out specular reflections, or have surface roughness never be zero and have almost mirrors that look perfectly 
+        smooth but don't generate NaNs 
+        could add specular surfaces that do not do explicit f()/p() calculations 
+    3. lack real background function infrastructure in case want to add environment map or more interesting functional background 
+        output has been HDR, but have been truncating it 
+    4. renderer RGB and more physcially based one would probably need to use spectral colors and maybe even polarization 

@@ -1,0 +1,51 @@
+ray_color() creates two hard coded pdfs: 
+    1. p0() related to shape of light 
+    2. p1() related to normal vector and type of surface 
+    can pass info about light or whatever hittable to sample into ray_color(), and can ask material function for pdf 
+    can ask either hit() or material class to supply whether there is specular vector 
+some renderers have material generate two rays: one specular and one diffuse 
+in book, material randomly decide whether diffuse or specular 
+should only call pdf_value() if diffuse 
+    can handle implicitly 
+
+not yet dealt with specular surfaces, nor instanes that mess with surface normal 
+metal: if fuzziness high, surface isn't ideally specular, but implicit sampling works the same 
+ray_color() needs to generate an implicitly sampled ray 
+specular image noisy reflection on ceiling because directions toward box not sampled with more density 
+
+when sampling sphere's solid angle uniformly from point outside sphere, really sampling cone uniformly 
+    cone tangent to sphere 
+    1/2pi as half of 1/4pi 
+        half of hemisphere area 
+    Ømax: 
+        sin(Ømax) = R / length(c - p) 
+        cos(Ømax) = sqrt(1 - (R^2) / length^2(c - p)) 
+    evaluaet pdf of directions 
+        direction toward sphere: 1/solid_angle 
+    solid angle of sphere: area on unit sphere 
+        solid_angle = 0 to 2pi(0 to Ømax(sin(Ø))) = 2pi * (1 - cos(Ømax)) 
+        r = 0: cos(Ømax) = 0 
+        sphere tangent at p: cos(Ømax) = 0, and 2pi area of hemisphere 
+try sampling sphere instead of light 
+    noisy box, but caustic under sphere good 
+    took longer to compile as sampling light 
+        rays hitting glass expensive 
+
+sample both sphere and light 
+    create mixture density of their two densities 
+    do it in ray_color() 
+        pass list of hittables in and building mixture pdf 
+        could add pdf functions to hittable_list instead 
+    specks remain 
+
+all monte carlo ray tracers have this as main loop: 
+    pixel_color = average(many many samples) 
+acne in image 
+    acne black or white 
+    one bad sample seems to kill whole pixel 
+    sample probably huge number or NaN 
+sweep bug under rug and check for NaNs, or kill NaNs 
+in book, lazy strategy 
+    how to check for NaN: 
+        NaN != NaN 
+        update write_color() to replace any NaN components with zero 

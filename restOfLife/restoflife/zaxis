@@ -1,0 +1,64 @@
+generate random directions 
+assume z axis surface normal, and Ø angle from normal 
+    get them oriented to surface normal vector 
+    deal with distributions rotationally symmetric about z 
+    p(direction) = f(Ø) 
+    on sphere in spherical coordinates dA = sin(Ø) * dØ * dø 
+        given directional pdf, p(direction) = f(Ø) on sphere, 1d pdfs on Ø and ø: 
+            a(ø) = 1/2pi 
+                uniform 
+            b(Ø) = 2pif(Ø)sin(Ø) 
+        for uniform random number r1 and r2: 
+            r1 = 0 to ø(1/2pi(dt)) = ø/2pi 
+            solve for ø: 
+                ø = 2pi * r1 
+            r2 = o to Ø(2pif(t)sin(t)(dt)) 
+                t dummy variable 
+        area of unity sphere = surface area = 4 * pi * r^2 
+            r = 1 
+        uniform p(direction) = 1/4pi on unit sphere: 
+            plug into r2 equation 
+                r2 = 1 - cos(Ø) / (2)
+                solving for cos(Ø): 
+                    cos(Ø) = 1- 2r2 
+                dont need to solve for Ø as cos(Ø) is enough 
+        generate unit vector direction toward (Ø,ø): 
+            convert to cartesian coordinates 
+            x = cos(ø) * sin(Ø) 
+            y = sin(ø) * sin(Ø) 
+            z = cos(Ø) 
+            using identity that cos^2 + sin^2 = 1, get the following in terms of random (r1,r2): 
+                x = cos(2pi * r1)sqrt(1 - (1 - 2r2)^2) 
+                y = sin(2pi * r1)sqrt(1 - (1 - 2r2)^2) 
+                z = 1 - 2r2 
+                (1 - 2r2)^2 = 1 - 4r2 + 4r2^2 
+                    x = cos(2pi * r1) * 2sqrt(r2(1 - r2)) 
+                    y = sin(2pi * r1) * 2sqrt(r2(1 - r2)) 
+                    z = 1 - 2r2 
+        random points on unit sphere 
+
+derive uniform on hemisphere 
+density being uniform on hemisphere means p(direction) = 1/2pi 
+changing constant in Ø equations: 
+    cos(Ø) = 1 - r2 
+    cos(Ø) varies from 0 to 1 
+        Ø varies from 0 to pi/2 
+do 2d integral with known solution 
+    arbitrary integrate cosine cubed over hemisphere: 
+        integral(cos^3(Ø)(dA)) 
+        = 0 to 2pi(0 to pi/2(cos^3(Ø)sin(Ø)dØ)dø) 
+        = 2pi (0 to pi/2(cos^3(Ø)sin(Ø)) = pi/2 
+integration with importance sampling: 
+    p(direction) = 1/2pi 
+    average f/p: 
+        cos^3(Ø)/(1/2pi) 
+generate directions with p(directions) = cos(Ø)/pi: 
+    r2 = 0 to Ø (2pi(cos(t)/pi)sin(t)) = 1 - cos^2(Ø) 
+    solving for cos(Ø): 
+        cos(Ø) = sqrt(1 - r2) 
+    save on a little math: 
+        z = cos(Ø) = sqrt(1 - r2) 
+        x = cos(ø)sin(Ø) = cos(2pi * r1)sqrt(1 - z^2) = cos(2pi * r1)sqrt(r2) 
+        y = sin(ø)sin(Ø) = sin(2pi * r1)sqrt(1 - z^2) = sin(2pi * r1)sqrt(r2) 
+    generating them as random vectors 
+    

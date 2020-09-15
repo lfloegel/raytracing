@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/larafs/Desktop/raytracing/main1.cpp
+rtweekend.h
+/Users/larafs/Desktop/raytracing/rtweekend.h
+iostream
+-
+iomanip
+-
+math.h
+-
+stdlib.h
+-
+
+/Users/larafs/Desktop/raytracing/ray.h
+vec3.h
+/Users/larafs/Desktop/raytracing/vec3.h
+
+/Users/larafs/Desktop/raytracing/rtweekend.h
+cmath
+-
+cstdlib
+-
+limits
+-
+memory
+-
+ray.h
+/Users/larafs/Desktop/raytracing/ray.h
+vec3.h
+/Users/larafs/Desktop/raytracing/vec3.h
+
+/Users/larafs/Desktop/raytracing/vec3.h
+cmath
+-
+iostream
+-
+

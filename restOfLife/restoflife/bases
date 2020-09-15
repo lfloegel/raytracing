@@ -1,0 +1,32 @@
+developed methods to generate random directions relative to z axis 
+do that relative to surface normal vector 
+
+orthonormal basis: collection of three mutually orthogonal unit vectors 
+    i.e. cartesian xyz axes 
+picture result of relative positions and orientations of camera and scene, so as long as camera and scene descrived in same coordinate
+system 
+suppose have origin O and cartesian unit vectors x, y, and z 
+    i.e. location (3, -2, 7) is O + 3x - 2y + 7z 
+if want to measure coordinates in another system with origin O' and basis vectors u, v, and w, find numbers (u', v', w') such that 
+O' + u'u + v'v + w'w 
+
+need to generate random directions with set distribution relative to n 
+don't need an origin because direction relative to no specified origin 
+need two cotangent vectors mutually perpendicular to n and to each other 
+some models come with one or more cotangent vectors 
+    if vector, process of making onb nontrivial 
+suppose have any vector a of non zero length and not parallel to n 
+    can get vectors s and t perpendicular to n by using property of cross product that c x d perpendicular to both c and d: 
+        t = unit_vecotr(a x n) 
+        s = t x n 
+may not be given a when loading model, and don't have a in existing program 
+if picked arbitrary a to use as initial vector may get a parallel to n 
+common method: use if statement to determine whether n a particular axis, and if not, use that axis 
+    i.e. if absolute(n.x > 0.9) //if n x axis 
+             a ← (0, 1, 0) //use y axis 
+         else //if n not a axis 
+             a ← (1, 0, 0) //use x axis 
+once have onb of s, t, and n, and have random(x, y, z) relative to z axis, can get vector relative to n: 
+    random vecotr = xs + yt + zn 
+
+basis image: orthonormal basis scatter function to fix bug 

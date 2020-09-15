@@ -1,0 +1,25 @@
+problem with sampling almost uniformly over directions: lights not sampled any more than unimportant directions 
+could use shadow rays and separate out direct lighting 
+instead, send more rays to light 
+    can use later to send more rays in whatever desired direction 
+
+for light of area A, if sample uniformly on that light, pdf on surface of light is 1/A 
+what is it on area of unit sphere that defines directions? 
+look at small area dA on light, probability of sampling it is p_q(q) * dA 
+on sphere, probability of sampling small area dw is p(direction) * dw 
+geometric relationship: 
+    dw = dA * cos(alpha) / distance^2(p,q) 
+    p: point on surface 
+    q: point on light 
+probability of sampling dw and dA must be same: 
+    p(direction) * (dA * cos(alpha) / distance^2(p,q)) = p_q(q) * dA = dA / A 
+    p(direction) = distance^2(p,q) / cos(alpha) * A 
+
+hack ray_color() to sample light in very hard coded fashion 
+samples only light sources 
+
+noisy pops around light on ceiling are because light two sided and small space between light and ceiling 
+want to have light emit only down 
+let emitted member function of hittable take extra info 
+flip light so its normals point in - y direction 
+    downwards 

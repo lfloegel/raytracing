@@ -1,0 +1,22 @@
+used pdf related to cos(Ø), and pdf related to sampling light 
+    would like pdf that combines these 
+any weighted averages of pdfs is a pdf 
+    i.e. average of two densities: mixture_pdf(direction) = 1/2reflection_pdf(direction) + 1/2light_pdf(direction) 
+choosing random direction: 
+    if (random_double() < 0.5) 
+        pick direction according to pdf_reflection 
+    else 
+        pick direction according to pdf_light 
+evaluating mixture_pdf: evaluate both reflection_pdf and light_pdf because some directions either pdf could have generated 
+    i.e. might generate a direction toward light using reflection_pdf 
+two functions pdf needs to support: 
+    1. what is value at the location? 
+    2. return random number distributed appropriately 
+densities image refactors where pdf computed 
+    cosine density pdf 
+
+try sampling directions toward a hittable  
+    i.e. light 
+
+mixture density of cosine and light sampling 
+lambertian ideal approximation to matte 
